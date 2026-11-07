@@ -57,7 +57,7 @@ Read `README.md`, `docs/SETUP.md`, `docs/CONTRIBUTING.md`, `docs/ARCHITECTURE.md
 
 **Setup confirmation:**
 - [x] Frontend accessible at `http://localhost:5173`: HTTP 200, HTML contains `PathReview` and `/@vite/client`.
-- [ ] Full application setup verified: blocked by missing Docker/Compose, WSL, and GNU Make.
+- [ ] Full application setup verified: WSL is installed but its required Virtual Machine Platform change is pending a Windows restart; Docker Desktop installation and application setup are deferred until after that restart.
 - [ ] Backend verified: requests to `http://localhost:8000/docs` and `/health` failed to connect.
 
 The frontend was started independently with Vite after installing locked dependencies; this does **not** establish successful `make setup`, `make run`, API startup, database migrations, seed data, or end-to-end functionality. Browser-rendered verification was unavailable because Computer Use stopped when it could not confidently determine the current browser URL. No screenshot evidence is claimed.
@@ -66,12 +66,12 @@ The frontend was started independently with Vite after installing locked depende
 | --- | --- |
 | Git | `git --version`: 2.49.0.windows.1; meets 2.39 minimum. |
 | Git Bash | `C:\Program Files\Git\bin\bash.exe`, GNU Bash 5.2.37; used for the documented Docker/Make command attempts. |
-| Python | Default `python --version`: 3.10.0, below requirement. Found and verified `C:\Users\Blayne\AppData\Local\Programs\Python\Python313\python.exe`: 3.13.2. Created the ignored project `.venv` with this interpreter; `.venv\Scripts\python.exe --version` confirms 3.13.2. Full project dependencies are not installed and their compatibility is not yet verified. |
+| Python | Installed Python 3.11.9 for the current user at `C:\Users\Blayne\AppData\Local\Programs\Python\Python311\python.exe` following explicit approval. Recreated this project's `.venv` with it and verified both its version and `sys.base_prefix`. The earlier Python 3.13 environment is backed up outside the fork in `../.pathreview-setup/venv-python313-before311`. Default Python remains 3.10; global PATH, launcher, file associations, and unrelated environments were not changed. Full project dependencies are not installed yet. |
 | Node.js | `node --version`: v22.14.0; meets 18 minimum. |
 | npm | `npm.cmd --version` and Git Bash `npm --version`: 10.9.2; meets 9 minimum. PowerShell's `npm.ps1` was blocked by execution policy; `npm.cmd` works without changing that policy. |
-| Docker / Compose | Commands not found on PATH or at the standard Docker Desktop installation location. No Docker services started. |
-| WSL | `wsl --status`: Windows Subsystem for Linux is not installed. |
-| GNU Make | Not found on PATH or in the checked GnuWin32/MSYS installation paths. |
+| Docker / Compose | Not installed yet; installation is deferred at the user-requested restart checkpoint. No Docker services started. |
+| WSL | Installed WSL 3.0.3; `wsl --version` reports 3.0.3.0 and kernel 6.18.54.1-1. The Virtual Machine Platform feature was disabled before installation and is now enable-pending. The installer explicitly requires a restart. WSL runtime operation is not yet verified. |
+| GNU Make | Installed the guide's `GnuWin32.Make` package and verified GNU Make 3.81 at `C:\Program Files (x86)\GnuWin32\bin\make.exe`. Its directory should be added to the project shell's PATH when resuming. |
 | Memory | Read-only Windows hardware query reports approximately 61.6 GiB RAM; exceeds 8 GB minimum. |
 | Disk space | Read-only Windows query reports approximately 679.6 GiB free on D:, exceeding the 20 GB minimum. |
 
@@ -133,12 +133,32 @@ Exact comment to post on issue #57:
 
 After posting, verify the comment permalink and set only `Howard!H19` to `Claimed`; the ledger identity/issue entry is already complete.
 
+### Authorized setup follow-up — restart checkpoint
+
+On November 7, the student explicitly authorized WSL 2, Docker Desktop, GNU Make, required dependencies, and administrator elevation, requested Python 3.11, and instructed that setup stop if a Windows restart was needed. That authorization supersedes the earlier pending installation permission.
+
+Completed and verified:
+
+1. `winget install --id Python.Python.3.11 --exact --source winget --scope user --silent --accept-source-agreements --accept-package-agreements --disable-interactivity --override '/quiet /norestart InstallAllUsers=0 PrependPath=0 AppendPath=0 Include_launcher=0 Include_test=0 AssociateFiles=0 Shortcuts=0'` succeeded with Python 3.11.9. Installer hash verification succeeded. The options preserve existing Python defaults and launcher behavior.
+2. After verifying that both paths were within the Project 7 workspace and that the backup did not exist, moved only this fork's `.venv` to `../.pathreview-setup/venv-python313-before311`. Created the replacement using the installed Python 3.11 interpreter with `-m venv`; `.venv/Scripts/python.exe` reports 3.11.9 and the Python311 base installation.
+3. `winget install --id GnuWin32.Make --exact --source winget --silent --accept-source-agreements --accept-package-agreements --disable-interactivity --override '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-'` succeeded. Installer hash verification succeeded; the installed executable reports GNU Make 3.81.
+4. Ran `wsl.exe --install --no-distribution --web-download` with administrator elevation. This installed WSL 3.0.3 without an additional Linux distribution and enabled the required Virtual Machine Platform component. The installer exited 0 but explicitly reported: **"Changes will not be effective until the system is rebooted."** The feature query changed from disabled (state 0) to enable-pending (state 2). This is a required restart, not proof that WSL can run workloads yet.
+
+Setup stopped at that message. No automatic Windows restart was requested or performed. No Docker installation, service startup, `make setup`, `make run`, or baseline test/check run was attempted after reaching this restart checkpoint. The earlier frontend HTTP result remains historical; it is not a new full-application verification.
+
+The Docker Desktop 4.98.0 download, started while WSL was installing, completed successfully. The official installer is staged at `../.pathreview-setup/DockerDesktopInstaller.exe`; its SHA-256 matches winget's published value `cd6273d9eaa4f07fa7593fc6813d37e1004381cebc3f26047a2554fa5db24388`, and its Authenticode signature is valid with Docker Inc. as signer. It has not been executed.
+
+Logs are outside the fork in `../.pathreview-setup/`, including `python311-winget.log`, `make-winget.log`, `wsl-install.log`, `wsl-install.exitcode`, and before/after virtualization-feature JSON. Only `JOURNAL.md` is intended for this follow-up commit. No existing source, tests, issue markers, or dependency manifests were changed.
+
+Installation options were checked against the [Python Windows installation guide](https://docs.python.org/3.11/using/windows.html), [Microsoft WSL command reference](https://learn.microsoft.com/en-us/windows/wsl/basic-commands), and [Docker Desktop Windows guide](https://docs.docker.com/desktop/setup/install/windows-install/).
+
 **Remaining Unit 7 setup actions:**
-1. Install/enable WSL 2 and Docker Desktop, then use the WSL 2 backend; a Windows administrator prompt or restart may be required. Install GNU Make using the setup guide's `winget install GnuWin32.Make` and expose its bin directory to Git Bash. System configuration was not changed automatically: the master spec explicitly says to avoid doing so without student approval.
-2. In Git Bash, select the existing Python 3.13 installation for the session (the default is still 3.10), or activate the created environment before setup. Preserve the existing `.env`.
-3. From the repository root, run `docker compose up -d`, confirm all configured services with `docker compose ps` (PostgreSQL, Redis, and Chroma), and then run `make setup`. Resolve actual dependency/platform failures if any; none are preemptively marked successful here.
-4. Stop the standalone Vite process before `make run` so port 5173 is available. Verify the frontend, `http://localhost:8000/docs`, and backing services; record actual results in this Unit 7 entry and commit/push the update.
-5. Post the claim comment, update H19, and submit the working branch URL through the course portal. No portal submission was performed.
+1. Save work and restart Windows manually. Then verify WSL and that Virtual Machine Platform is enabled rather than enable-pending. No further installation permission is needed for the already-authorized scope.
+2. Install Docker Desktop with its WSL 2 backend and start it. Prefer the supported per-user installation to limit machine-wide changes. Verify `docker --version`, `docker compose version`, and `docker info` before running the project services.
+3. In Git Bash, activate this project's Python 3.11 `.venv` and add the installed Make and Docker CLI directories to that shell's PATH. Preserve the existing `.env`.
+4. From the repository root, run `docker compose up -d`, confirm all configured services with `docker compose ps` (PostgreSQL, Redis, and Chroma), then run `make setup`. Resolve actual dependency/platform failures if any; none are preemptively marked successful here.
+5. Ensure port 5173 is free, run `make run`, and verify the frontend at `http://localhost:5173`, backend docs at `http://localhost:8000/docs`, and health/service status. Run baseline lint, non-writing format verification, typecheck, unit tests, frontend tests, and applicable integration checks. Preserve seeded failures and source files; document actual results, then commit/push the journal update on the same branch.
+6. Post the claim comment, update H19, and submit the working branch URL through the course portal. Those earlier external steps remain unchanged by this setup follow-up.
 
 **Unit 7 audit:**
 - [x] Existing fork/history preserved; correct origin and upstream verified.

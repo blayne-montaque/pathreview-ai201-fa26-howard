@@ -408,3 +408,24 @@ The complete reproduction command was extracted from this journal and rerun on N
 Only `JOURNAL.md` and `PLAN.md` belong in the Unit 8 commits. Environment repairs, backups, and logs remain local and untracked. AI assistance was used for relocation, investigation, executed reproduction, documentation, planning, and validation. Course Portal submission remains the student's action using the unchanged working branch URL:
 
 https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/tree/fix/57-tech-detector-exclude-generated
+
+## Unit 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+Recorded: 2026-11-08 17:17:29 EST (America/New_York). This is the first factual progress snapshot in the November 8 execution; the assignment's mid-week/end-of-week labels do not imply separate calendar-day events.
+
+**Current progress:**
+Started from clean Unit 8 commit `fb567638c2ffe30963c6538011dccefd0e96d066` on the existing branch with both remotes verified. Completed the implementation and local validation in PLAN.md's five subtasks. `_should_skip_file()` now compares exact POSIX directory components before the filename against the same eight excluded names. Shared extension/configuration filtering, alphabetical language selection, result schema, and eligible paths remain intact. The inspected caller still supplies no Windows-separator guarantee, so backslash normalization was not added and the limitation is explicit in the helper docstring.
+
+The two original #57 tests first returned 2 XFAIL on the unchanged baseline, then **2 passed with `--runxfail` while their markers and assertions were still unchanged**. Only after that proof were their two decorators removed. Fix commit: [2eb62753e58b8bb6f543ba7450fd39943b889a6d](https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/commit/2eb62753e58b8bb6f543ba7450fd39943b889a6d). Regression-coverage commit: [71a4c7cf1e21aa3c2796bc3aac74d4be36945078](https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/commit/71a4c7cf1e21aa3c2796bc3aac74d4be36945078).
+
+Targeted tests report **76 passed**. `make check` passed (Ruff, Black, mypy; only the changed test file needed formatting), and `make test-unit` passed with **426 passed, 51 xfailed, 2 warnings**. The 49 added parametrized cases plus the two repaired regressions explain the change from 375 passed / 53 xfailed. The exact eight-path reproduction now returns `{"primary_language": "Python", "all_languages": ["Python"], "frameworks": []}`. Full diff review confirmed that all unrelated tests, suppressions, dependency files, and prior milestone documents were unchanged.
+
+**Next steps:**
+Push these commits, create the upstream draft PR using the repository template, prepare the peer/mentor review request, inspect actual GitHub Actions results, append the second snapshot with the real PR URL, and verify CI again on the final journal commit. Mark the PR ready only if all five required remote jobs pass.
+
+**Blockers:**
+No blocker to the scoped implementation. The two requested course review pages redirect to CodePath Hub's GitHub sign-in page, so their authenticated contents could not be reviewed; self-review used the supplied Unit 9 criteria, PLAN.md, the repository contribution guide, and the full diff. No connected Slack/Discord tool or verified destination is available, so a ready-to-send feedback message will be supplied without claiming it was posted.
+
+Existing validation limitations remain: the default frontend run reports 17 passed / 1 timeout at 5,000 ms; the diagnostic 30-second override passes all 18 tests, and the frontend build passes. `make test-integration` collects no tests (pytest exit 5; Make exit 2), while upstream CI explicitly treats that empty-suite status as success. A fresh `git fetch upstream` confirmed `upstream/main` is `14578ac9708dcbd94c3258430baddeae621c7e40`; frontend files, CI workflow, integration directory, and `pyproject.toml` match it exactly. No unrelated baseline repair was attempted. Remote CI and human feedback have not yet been observed at this snapshot.

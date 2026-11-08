@@ -253,12 +253,12 @@ All technical Unit 7 requirements in the supplied assignment are complete; the c
 
 Recorded: November 8, 2026 (America/New_York).
 
-**Reproduction commit link:** Pending creation of this dedicated reproduction checkpoint; the final planning entry will replace this with its verified SHA and permalink.
+**Reproduction commit link:** [93568a5b474064b0dbc66cf6050a5987433fc8d1](https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/commit/93568a5b474064b0dbc66cf6050a5987433fc8d1) (pushed and verified before PLAN.md was written).
 
 **Reproduction summary:**
 Executing issue #57's exact eight-path input against the unchanged detector returned `primary_language="JavaScript"` and `all_languages=["JavaScript", "Python"]`, instead of Python alone. Both existing issue-specific tests reported XFAIL, and a diagnostic `--runxfail` run exposed two `assert 'JavaScript' == 'Python'` failures.
 
-**PLAN.md link:** Not yet created at this reproduction checkpoint; the plan will be written and committed only after this evidence commit is pushed.
+**PLAN.md link:** [PLAN.md on the working branch](https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/blob/fix/57-tech-detector-exclude-generated/PLAN.md).
 
 **Blockers or open questions:**
 No blocker to the offline reproduction. The caller passes path strings through without documenting their separator contract; POSIX examples are established, while backslash support remains a Unit 9 scope question. Windows retains a lock on the now-empty original `Project 7` outer directory; all actual workspace contents have been relocated successfully.
@@ -391,3 +391,20 @@ Result: **2 failed in 0.25s**, exit 1. Both fail at `assert data["primary_langua
 The existing Pydantic class-config deprecation, async-mock runtime warning, pytest-asyncio loop-scope warning, and Vite mixed-import warning remain. Unit 7's unrelated `/health`, default frontend timeout, and empty integration-suite limitations were not repaired or represented as freshly retested. Full frontend/integration tests were not rerun for this documentation-only unit.
 
 Raw diagnostic and check logs remain outside the fork in `../.pathreview-setup/unit8-*.log`, with exit-code files. The command and observed results above are committed evidence and do not depend on those local logs. The original Unit 7 text is preserved verbatim above; source, tests, dependency manifests, and xfail markers remain unchanged.
+
+### Final Unit 8 local audit
+
+The complete reproduction command was extracted from this journal and rerun on November 8 after writing the plan. Every issue output, path-skip decision, and additional case result matched the first execution exactly; the bug remains reproducible. The final run is saved locally as `unit8-final-reproduction.log` (exit 0).
+
+- [x] Executed the live issue's exact input and documented actual/expected output, root cause, and environment assumptions.
+- [x] Created and pushed dedicated reproduction commit `93568a5b474064b0dbc66cf6050a5987433fc8d1` before writing the plan; GitHub commit readback verified it.
+- [x] Created root-level `PLAN.md` with all six required sections and five concrete implementation subtasks.
+- [x] Identified affected functions, meaningful test assertions, risks, and concrete edge cases, including the unresolved separator contract.
+- [x] Appended the required Unit 8 journal fields with the actual reproduction permalink and correct working-branch plan URL.
+- [x] Confirmed the complete Unit 7 text remains an unchanged prefix of this journal, comparing it against commit `22d514dc35da0aaf70b011aa3387d0eaf0700894`.
+- [x] Verified production code and existing tests are unchanged, including both strict #57 expected-failure markers; no issue implementation, PR, or Unit 9 work was performed.
+- [x] Ran the relevant baseline checks and disclosed existing warnings and untested service behavior.
+
+Only `JOURNAL.md` and `PLAN.md` belong in the Unit 8 commits. Environment repairs, backups, and logs remain local and untracked. AI assistance was used for relocation, investigation, executed reproduction, documentation, planning, and validation. Course Portal submission remains the student's action using the unchanged working branch URL:
+
+https://github.com/blayne-montaque/pathreview-ai201-fa26-howard/tree/fix/57-tech-detector-exclude-generated

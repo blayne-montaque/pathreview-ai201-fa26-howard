@@ -429,3 +429,64 @@ Push these commits, create the upstream draft PR using the repository template, 
 No blocker to the scoped implementation. The two requested course review pages redirect to CodePath Hub's GitHub sign-in page, so their authenticated contents could not be reviewed; self-review used the supplied Unit 9 criteria, PLAN.md, the repository contribution guide, and the full diff. No connected Slack/Discord tool or verified destination is available, so a ready-to-send feedback message will be supplied without claiming it was posted.
 
 Existing validation limitations remain: the default frontend run reports 17 passed / 1 timeout at 5,000 ms; the diagnostic 30-second override passes all 18 tests, and the frontend build passes. `make test-integration` collects no tests (pytest exit 5; Make exit 2), while upstream CI explicitly treats that empty-suite status as success. A fresh `git fetch upstream` confirmed `upstream/main` is `14578ac9708dcbd94c3258430baddeae621c7e40`; frontend files, CI workflow, integration directory, and `pyproject.toml` match it exactly. No unrelated baseline repair was attempted. Remote CI and human feedback have not yet been observed at this snapshot.
+
+---
+
+### Check-in 2 (end of week)
+
+Recorded: 2026-11-08 17:21:30 EST (America/New_York), later in the same November 8 execution as Check-in 1. This is a factual completion/blocker snapshot, not a claim that a separate week elapsed.
+
+**PR link:** Not created; no upstream PR number or URL has been assigned. The authenticated GitHub connector returned HTTP 403, `Resource not accessible by integration`, when creating the explicitly requested draft PR against `codepath/pathreview-ai201-fa26-howard:main`. The existing local Git credential was unavailable noninteractively. Browser fallback was then stopped by Computer Use because it could not determine the current Windows browser URL confidently enough to enforce policy. No browser-policy workaround or unauthorized credential/access change was attempted.
+
+**Branch:** `fix/57-tech-detector-exclude-generated`
+
+**What you built:**
+The detector now excludes exact vendor/generated directory components at root and nested depths while preserving the existing eight-name exclusion policy. Eligible source/configuration files, the public result structure, and alphabetical language selection are preserved. The fix deliberately retains POSIX path semantics rather than assuming undocumented Windows-separator support.
+
+**Tests added or updated:**
+`tests/unit/test_tech_detector.py`: 49 additional parametrized cases cover all eight excluded directories at three depths, the exact eight-path issue reproduction, input immutability, similar directory names, filename boundaries, all-excluded inputs, excluded configuration indicators, eligible root configuration files, and genuine mixed-language source. Strengthened the two original #57 tests, the vendor test, and missing/empty-input assertions. Only the two obsolete #57 strict xfail decorators were removed after the original assertions passed with `--runxfail`; all unrelated test files and markers remain unchanged.
+
+**Self-review confirmation:** [x] make check passes  [x] make test-unit passes
+
+**Draft PR feedback received from:** none. No reviewer, review, or response is claimed.
+
+**Verified local validation:**
+
+| Command / check | Actual result |
+| --- | --- |
+| Original #57 tests before implementation | 2 XFAIL. |
+| Original #57 tests after helper correction, before marker removal, with `--runxfail -v` | 2 passed, exit 0; original test file was still unchanged at this point. |
+| `.venv/Scripts/python -m pytest tests/unit/test_tech_detector.py -q` | 76 passed, exit 0. |
+| `make check` | PASS, exit 0: Ruff passed, Black formatted only the changed test file (109 unchanged), mypy passed for 76 source files. |
+| `make test-unit` | PASS, exit 0: 426 passed, 51 xfailed, 2 warnings in 5.74 seconds. |
+| Exact Unit 8 reproduction command | PASS: actual dictionary equals the documented intended Python-only result. Root/nested excluded configuration and all-excluded cases also behave correctly; genuine mixed-language controls remain unchanged. |
+| `npm --prefix frontend test -- --run` | 17 passed, 1 existing timeout in `ProfileForm > validates portfolio URL character limit` at 5,000 ms. |
+| `npm --prefix frontend test -- --run --testTimeout=30000` | 18 passed, exit 0; diagnostic CLI override only. |
+| `npm --prefix frontend run build` | PASS, exit 0; existing Vite mixed-import warning remains. |
+| `make test-integration` | Empty suite: pytest exit 5 / Make exit 2; not claimed as passing integration coverage. Unchanged upstream CI accepts the empty-suite status. |
+| Preservation/scope review | Only the detector, its test file, and the appended Unit 9 journal are changed relative to the Unit 8 checkpoint. PLAN.md and the entire preceding journal are preserved. |
+| `git diff --check` and commit hooks | PASS. |
+
+**Self-review:**
+Reviewed the complete production/test diff for root/nested matching, exact component boundaries, unchanged exclusion names, eligible filenames, configuration leakage, result schema, input preservation, and sorted/alphabetical output. The helper is the only production change; tests are deterministic and local. No API, frontend, dependency, health-route, or unrelated seeded-bug change was made. The requested course checklist/testing pages redirected to authenticated CodePath Hub, so their unavailable contents are not claimed as read; the supplied rubric and repository conventions were applied.
+
+**Remote CI and readiness:**
+No PR was created, so there is no PR whose five checks can be certified and no draft to mark Ready for review. The jobs `lint`, `typecheck`, `test-unit`, `test-integration`, and `frontend` are **NOT VERIFIED / NOT RUN on a PR**, not green, pending jobs, or failed jobs. The workflow only automatically runs for PRs targeting main or pushes to main; pushing this feature branch alone does not establish remote CI. Local success is not substituted for remote results. No merge was performed.
+
+**Peer/mentor feedback request:**
+No Slack/Discord tool or verified destination was available. After the draft PR exists, replace the single placeholder below with its actual URL and send it to the appropriate classmate/mentor channel:
+
+> Could someone review my draft PR for PathReview issue #57? [actual PR URL] It excludes exact vendor/build directory components at root and nested depths, with regression tests for configuration leakage and legitimate source paths. I'd appreciate feedback on correctness, regression coverage, and whether the change stays focused. Thanks!
+
+This message is prepared, not sent; the PR URL placeholder is not presented as a real PR link.
+
+**Manual PR creation and remaining external actions:**
+
+1. Open https://github.com/codepath/pathreview-ai201-fa26-howard/compare/main...blayne-montaque:fix/57-tech-detector-exclude-generated?expand=1 while signed in as `blayne-montaque`.
+2. Confirm base repository `codepath/pathreview-ai201-fa26-howard`, base `main`, head repository `blayne-montaque/pathreview-ai201-fa26-howard`, and compare branch `fix/57-tech-detector-exclude-generated`. Reuse any PR that has since appeared instead of creating a duplicate.
+3. Use title `fix(agent): exclude vendored and build-output directories from tech detection`. Copy the completed repository-template body from the local `../.pathreview-setup/unit9-pr-body.md`, including its actual validation results and unchecked remote-CI/integration boxes. Select **Create draft pull request**.
+4. Record the real upstream PR URL here and send the prepared review request. Inspect all five jobs on the latest PR head; if GitHub requires maintainer approval, request it through the instructor-designated channel. Investigate actual failures without altering unrelated seeded bugs.
+5. After all five jobs pass and available feedback is addressed, update the PR's CI checkbox and mark it Ready for review. Preserve the history; do not merge or force-push. Any subsequent journal push requires another latest-head CI check.
+6. Submit the existing working-branch URL through the Course Portal yourself when the PR is technically ready.
+
+**Unit 9 audit status:** implementation, focused regression coverage, original-assertion proof, marker preservation, local required checks, self-review, two factual journal snapshots, and pushed branch are complete. External PR creation, a real PR URL in this check-in, five green remote jobs, actual feedback-request transmission, and Ready-for-review status remain blocked or pending the authenticated manual action above. A request template is supplied; no review feedback is fabricated. Unit 10 and video work were not started, and no Course Portal submission was performed.

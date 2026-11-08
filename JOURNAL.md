@@ -247,3 +247,147 @@ Evidence logs and the installed Python package snapshot remain local in `../.pat
 - [ ] Course portal submission completed by student.
 
 All technical Unit 7 requirements in the supplied assignment are complete; the course-portal submission remains the student's action. This audit is against the supplied requirements, not a claimed numerical grade or an inaccessible detailed portal rubric. No issue-specific reproduction artifact/commit, `PLAN.md`, fix, test edits, PR, or Unit 8 work was performed. AI assistance was used for inspection, selection analysis, environment setup, baseline verification, ledger registration, and this evidence-based journal; the student posted the GitHub claim comment.
+
+
+## Unit 8 — Reproduction & solution planning
+
+Recorded: November 8, 2026 (America/New_York).
+
+**Reproduction commit link:** Pending creation of this dedicated reproduction checkpoint; the final planning entry will replace this with its verified SHA and permalink.
+
+**Reproduction summary:**
+Executing issue #57's exact eight-path input against the unchanged detector returned `primary_language="JavaScript"` and `all_languages=["JavaScript", "Python"]`, instead of Python alone. Both existing issue-specific tests reported XFAIL, and a diagnostic `--runxfail` run exposed two `assert 'JavaScript' == 'Python'` failures.
+
+**PLAN.md link:** Not yet created at this reproduction checkpoint; the plan will be written and committed only after this evidence commit is pushed.
+
+**Blockers or open questions:**
+No blocker to the offline reproduction. The caller passes path strings through without documenting their separator contract; POSIX examples are established, while backslash support remains a Unit 9 scope question. Windows retains a lock on the now-empty original `Project 7` outer directory; all actual workspace contents have been relocated successfully.
+
+### Workspace and environment verification
+
+- Existing repository relocated to `D:\Productivity\School\Howard University\Courses\Fall 2026\CSCI 485\Projects 7-10\pathreview-ai201-fa26-howard`. The internal repository folder was not renamed, recloned, or reinitialized. There was no `Project 8` directory to remove; Projects 1–6 were untouched.
+- Before work, the tree was clean on `fix/57-tech-detector-exclude-generated` at Unit 7 commit `22d514dc35da0aaf70b011aa3387d0eaf0700894`. `origin` still points to `blayne-montaque/pathreview-ai201-fa26-howard`, and `upstream` to `codepath/pathreview-ai201-fa26-howard`; the three Unit 7 commits remain ancestors.
+- Stopped only the confirmed PathReview Uvicorn/Make and Vite/npm process trees. The outer rename remained locked, so the existing contents were relocated into the requested outer folder. A PowerShell move stopped after transferring the hidden `.git` contents; inspection confirmed the destination HEAD, and the remaining directories were moved without replacing files. Final Git status was clean and the original folder was verified empty, but Windows still refused its removal. No unrelated process was terminated.
+- Fingerprints confirmed `.env`, the Python executable, Unit 7 journal, and frontend lockfile were unchanged after relocation. The earlier Python 3.13 backup and local setup support files moved with the workspace.
+- Python 3.11.9 and installed dependencies were retained. Regenerated 58 existing console launchers from installed entry-point metadata, updated activation/editable-install paths and local `pyvenv.cfg`, and reinstalled the existing pre-commit hook at the new path. Original affected local files were backed up in `../.pathreview-setup/relocation-backup/`; package names and versions were unchanged. No packages were downloaded or reinstalled.
+- Git Bash activation selects the relocated Python 3.11 environment. `pytest --version`, `uvicorn --version`, and `pip check` succeed. GNU Make 3.81, Node v22.14.0, Docker CLI 29.9.2, and the installed Docker Desktop/WSL 2 environment remain available; `wsl --list --verbose` shows `docker-desktop` stopped with version 2.
+- Docker Desktop was already stopped during this run; an attempted `docker compose stop vector-db` could not connect to its engine. The reproduction and checks require no containers, API key, database, or network. Services were not restarted, and no fresh HTTP runtime verification is claimed. The existing relative Compose override resolves from the new location and `docker compose ... config --services` lists `db`, `redis`, and `vector-db`. On the next application start, run Compose with that override from the relocated repository to recreate Chroma's bind mount at its new path before `make run`.
+
+### Exact reproduction on unfixed code
+
+Issue readback on November 8 confirmed [#57](https://github.com/codepath/pathreview-ai201-fa26-howard/issues/57) is open with label `tier-1` and title **Tech detector counts vendored and build-output files, skewing language detection**. The first `files` list below is the issue's exact input, in the same order. Run this complete diagnostic command from the repository root in Git Bash with the existing Python 3.11 environment:
+
+```bash
+.venv/Scripts/python - <<'PY'
+import json
+from agent.tools.tech_detector import TechDetector
+
+t = TechDetector()
+files = ['main.py', 'core/app.py', 'node_modules/lib/index.js', 'node_modules/lib/util.js', 'node_modules/x/a.js', 'node_modules/y/b.js', 'build/bundle.js', 'build/vendor.js']
+result = t.execute({'files': files})
+print('ISSUE_INPUT=' + json.dumps(files))
+print('ISSUE_SUCCESS=' + json.dumps(result.success))
+print('ISSUE_ACTUAL=' + json.dumps(result.data, sort_keys=True))
+print('ISSUE_EXPECTED=' + json.dumps({'primary_language': 'Python', 'all_languages': ['Python'], 'frameworks': []}, sort_keys=True))
+print('ISSUE_PRIMARY=' + result.data['primary_language'])
+
+paths = ['node_modules/lib/index.js', 'frontend/node_modules/lib/index.js', 'build/bundle.js', 'frontend/build/bundle.js', 'vendor/lib.js', 'dist/bundle.js', 'src/build_tools/app.py', 'src/rebuild/app.py', 'node_modules_backup/app.js', 'build.py', r'node_modules\lib\index.js', r'frontend\node_modules\lib\index.js']
+for path in paths:
+    print('SKIP=' + json.dumps({'path': path, 'skip': t._should_skip_file(path)}, sort_keys=True))
+
+cases = {
+    'nested_generated': ['main.py', 'core/app.py', 'frontend/node_modules/lib/index.js', 'frontend/build/bundle.js'],
+    'root_excluded_only': ['node_modules/lib/index.js', 'build/bundle.js'],
+    'nested_excluded_only': ['frontend/node_modules/lib/index.js', 'frontend/build/bundle.js'],
+    'root_excluded_config': ['main.py', 'node_modules/lib/package.json', 'build/package.json'],
+    'nested_excluded_config': ['main.py', 'frontend/node_modules/lib/package.json', 'frontend/build/package.json'],
+    'similar_names': ['src/build_tools/app.py', 'src/rebuild/app.py', 'node_modules_backup/app.js', 'build.py'],
+    'legitimate_config': ['main.py', 'package.json'],
+    'windows_root': ['main.py', r'node_modules\lib\index.js', r'build\bundle.js'],
+    'windows_nested': ['main.py', r'frontend\node_modules\lib\index.js', r'frontend\build\bundle.js'],
+}
+for name, paths in cases.items():
+    output = t.execute({'files': paths})
+    print('CASE=' + json.dumps({'name': name, 'files': paths, 'success': output.success, 'actual': output.data}, sort_keys=True))
+PY
+```
+
+The command exited 0 because it reports observations rather than asserting that the defect is fixed. Captured output for the issue input:
+
+```text
+ISSUE_INPUT=["main.py", "core/app.py", "node_modules/lib/index.js", "node_modules/lib/util.js", "node_modules/x/a.js", "node_modules/y/b.js", "build/bundle.js", "build/vendor.js"]
+ISSUE_SUCCESS=true
+ISSUE_ACTUAL={"all_languages": ["JavaScript", "Python"], "frameworks": [], "primary_language": "JavaScript"}
+ISSUE_EXPECTED={"all_languages": ["Python"], "frameworks": [], "primary_language": "Python"}
+ISSUE_PRIMARY=JavaScript
+```
+
+The expected dictionary is the intended result for the two retained Python files, not an observed fixed result. The actual `ToolResult` reports success even though detection is semantically wrong.
+
+Observed `_should_skip_file()` decisions:
+
+| Path | Actual skip result |
+| --- | --- |
+| `node_modules/lib/index.js` | `False` |
+| `frontend/node_modules/lib/index.js` | `True` |
+| `build/bundle.js` | `False` |
+| `frontend/build/bundle.js` | `True` |
+| `vendor/lib.js`, `dist/bundle.js` | `False` for both |
+| `src/build_tools/app.py`, `src/rebuild/app.py`, `node_modules_backup/app.js`, `build.py` | `False` for all; these legitimate similar names remain eligible |
+| `node_modules\lib\index.js`, `frontend\node_modules\lib\index.js` | `False` for both; backslashes are not normalized |
+
+The additional cases use the exact inputs embedded in the command above; all returned `success=True`:
+
+| Case | Actual primary / languages / frameworks | Interpretation |
+| --- | --- | --- |
+| `nested_generated` | `Python` / `[Python]` / `[]` | Nested POSIX generated paths already filter correctly. |
+| `root_excluded_only` | `JavaScript` / `[JavaScript]` / `[]` | Incorrect; intended all-excluded result is `Unknown` / `[]` / `[]`. |
+| `nested_excluded_only` | `Unknown` / `[]` / `[]` | Existing all-filtered behavior. |
+| `root_excluded_config` | `JavaScript` / `[JavaScript, Python]` / `[Node.js]` | Root generated/vendor configuration files also leak into detection. |
+| `nested_excluded_config` | `Python` / `[Python]` / `[]` | The shared filter protects configuration detection when the pattern matches. |
+| `similar_names` | `JavaScript` / `[JavaScript, Python]` / `[]` | Legitimate JavaScript remains eligible; preserve this behavior. |
+| `legitimate_config` | `JavaScript` / `[JavaScript, Python]` / `[Node.js]` | Repository-root `package.json` must remain eligible. |
+| `windows_root`, `windows_nested` | `JavaScript` / `[JavaScript, Python]` / `[]` for both | Observed backslash limitation, not proof that Windows paths are part of the supported contract. |
+
+**Confirmed root cause:** `TechDetector._should_skip_file()` in `agent/tools/tech_detector.py` tests `any(pattern in filepath for pattern in skip_patterns)`, with patterns such as `"/node_modules/"` and `"/build/"`. Repository-relative paths beginning directly with those directory names contain no preceding slash and fail to match; nested equivalents contain the pattern and match. `_detect_tech()` uses the resulting filtered list for both extension and configuration detection, so both are contaminated. Languages are collected in a set and `primary_language` is `sorted(languages)[0]`; JavaScript wins alphabetically here, not because six JS files outnumber two Python files. Changing that separate primary-language policy is outside #57.
+
+`Orchestrator._build_plan()` in `agent/orchestrator.py` passes `profile_data["files"]` directly to the detector. Neither it nor the detector documents or performs path normalization. The inspected `GitHubTool` retrieves repository metadata, not a file-tree producer; a stronger cross-platform input guarantee could not be established from this call path.
+
+### Existing regression tests and strict expected failures
+
+Executed from the repository root:
+
+```bash
+.venv/Scripts/python -m pytest \
+  tests/unit/test_tech_detector.py::TestTechDetector::test_node_modules_excluded \
+  tests/unit/test_tech_detector.py::TestTechDetector::test_build_directory_excluded \
+  -v -rx
+```
+
+Result: **2 xfailed in 0.66s**, exit 0. Both retain `@pytest.mark.xfail(strict=True, reason="issue #57: tech detector counts vendored/build-output files")`.
+
+To expose the real failures without editing the tests or their markers:
+
+```bash
+.venv/Scripts/python -m pytest \
+  tests/unit/test_tech_detector.py::TestTechDetector::test_node_modules_excluded \
+  tests/unit/test_tech_detector.py::TestTechDetector::test_build_directory_excluded \
+  -v --runxfail --tb=short
+```
+
+Result: **2 failed in 0.25s**, exit 1. Both fail at `assert data["primary_language"] == "Python"` (test lines 81 and 111), with actual `JavaScript`. This intentional diagnostic failure is evidence of the existing defect, not a new regression. `XFAIL` acknowledges a known failing test; it does not establish a successful fix. With `strict=True`, a later successful assertion becomes `XPASS(strict)` and fails the suite until that issue's obsolete marker is removed in Unit 9. No marker or test was changed here.
+
+### Relocation baseline checks
+
+| Check | Actual Unit 8 result |
+| --- | --- |
+| `make lint` | PASS, exit 0. |
+| `.venv/Scripts/black --check .` | PASS, exit 0; 110 files unchanged. |
+| `make typecheck` | PASS, exit 0; 76 source files checked. |
+| `make test-unit` | PASS, exit 0; **375 passed, 53 xfailed, 2 warnings in 6.51s**. |
+| `npm --prefix frontend run build` | PASS, exit 0; TypeScript/Vite build from the relocated directory. |
+| `.venv/Scripts/pip.exe check` | PASS; no broken requirements. |
+
+The existing Pydantic class-config deprecation, async-mock runtime warning, pytest-asyncio loop-scope warning, and Vite mixed-import warning remain. Unit 7's unrelated `/health`, default frontend timeout, and empty integration-suite limitations were not repaired or represented as freshly retested. Full frontend/integration tests were not rerun for this documentation-only unit.
+
+Raw diagnostic and check logs remain outside the fork in `../.pathreview-setup/unit8-*.log`, with exit-code files. The command and observed results above are committed evidence and do not depend on those local logs. The original Unit 7 text is preserved verbatim above; source, tests, dependency manifests, and xfail markers remain unchanged.

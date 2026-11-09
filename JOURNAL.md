@@ -436,7 +436,9 @@ Existing validation limitations remain: the default frontend run reports 17 pass
 
 Recorded: 2026-11-08 17:21:30 EST (America/New_York), later in the same November 8 execution as Check-in 1. This is a factual completion/blocker snapshot, not a claim that a separate week elapsed.
 
-**PR link:** Not created; no upstream PR number or URL has been assigned. The authenticated GitHub connector returned HTTP 403, `Resource not accessible by integration`, when creating the explicitly requested draft PR against `codepath/pathreview-ai201-fa26-howard:main`. The existing local Git credential was unavailable noninteractively. Browser fallback was then stopped by Computer Use because it could not determine the current Windows browser URL confidently enough to enforce policy. No browser-policy workaround or unauthorized credential/access change was attempted.
+**PR link:** https://github.com/codepath/pathreview-ai201-fa26-howard/pull/81
+
+**Original PR-creation blocker at the 17:21:30 EST snapshot (subsequently resolved):** Not created; no upstream PR number or URL had been assigned at that time. The authenticated GitHub connector returned HTTP 403, `Resource not accessible by integration`, when creating the explicitly requested draft PR against `codepath/pathreview-ai201-fa26-howard:main`. The existing local Git credential was unavailable noninteractively. Browser fallback was then stopped by Computer Use because it could not determine the current Windows browser URL confidently enough to enforce policy. No browser-policy workaround or unauthorized credential/access change was attempted.
 
 **Branch:** `fix/57-tech-detector-exclude-generated`
 
@@ -470,23 +472,41 @@ The detector now excludes exact vendor/generated directory components at root an
 **Self-review:**
 Reviewed the complete production/test diff for root/nested matching, exact component boundaries, unchanged exclusion names, eligible filenames, configuration leakage, result schema, input preservation, and sorted/alphabetical output. The helper is the only production change; tests are deterministic and local. No API, frontend, dependency, health-route, or unrelated seeded-bug change was made. The requested course checklist/testing pages redirected to authenticated CodePath Hub, so their unavailable contents are not claimed as read; the supplied rubric and repository conventions were applied.
 
-**Remote CI and readiness:**
-No PR was created, so there is no PR whose five checks can be certified and no draft to mark Ready for review. The jobs `lint`, `typecheck`, `test-unit`, `test-integration`, and `frontend` are **NOT VERIFIED / NOT RUN on a PR**, not green, pending jobs, or failed jobs. The workflow only automatically runs for PRs targeting main or pushes to main; pushing this feature branch alone does not establish remote CI. Local success is not substituted for remote results. No merge was performed.
+**Earlier remote CI state at the 17:21:30 EST snapshot (superseded):**
+No PR had been created, so there was no PR whose five checks could be certified and no draft to mark Ready for review. All five remote jobs were unverified at that time; the feature-branch push alone had not triggered PR CI. This earlier access blocker was resolved by the student's subsequent manual creation of PR #81.
+
+**Verified PR, CI, and readiness update:**
+Verified through GitHub on 2026-11-08 18:59:54 EST (America/New_York). [Upstream PR #81](https://github.com/codepath/pathreview-ai201-fa26-howard/pull/81) exists with the correct base `codepath/pathreview-ai201-fa26-howard:main` and head `blayne-montaque/pathreview-ai201-fa26-howard:fix/57-tech-detector-exclude-generated`. GitHub reports `open`, `draft=true`, `merged=false`, and `mergeable=true` (no merge conflicts). Its verified head before this journal-only update is `bc49d50c0db4a98e57bbe712760316a7de8ca221`.
+
+[CI run 42537384527](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527), returned by GitHub for that exact commit, is completed with conclusion `success`. Individual job readback confirms:
+
+| Required job | Actual GitHub status / conclusion | Evidence |
+| --- | --- | --- |
+| `lint` | completed / success | [Job 128904589961](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527/job/128904589961) |
+| `typecheck` | completed / success | [Job 128904589837](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527/job/128904589837) |
+| `test-unit` | completed / success | [Job 128904589824](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527/job/128904589824) |
+| `test-integration` | completed / success | [Job 128904589829](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527/job/128904589829) |
+| `frontend` | completed / success | [Job 128904589660](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537384527/job/128904589660) |
+
+These five successes validate **`bc49d50c0db4a98e57bbe712760316a7de8ca221`**, not an untested future head. The documentation follow-up requires a fresh CI check after pushing; its actual latest-head status is reported separately at completion. The successful integration job follows the repository's existing empty-suite handling and is not represented as newly added integration coverage. Earlier local frontend timeout evidence remains unchanged above; it does not negate the verified successful GitHub frontend job.
+
+GitHub review and discussion readback returned no entries. Peer-review feedback remains **none**, and no request transmission is claimed. The PR remains a draft; this documentation cleanup does not mark it Ready for review or merge it.
+
+**PR-description CI checkbox:**
+Attempted to check the CI box and replace the stale creation-blocker sentence with the verified commit/run evidence. GitHub rejected the metadata update with HTTP 403, `Resource not accessible by integration`. The published description was not changed by that request; the checkbox and stale sentence require a manual edit. This metadata permission limitation is separate from the now-resolved PR-creation blocker.
 
 **Peer/mentor feedback request:**
-No Slack/Discord tool or verified destination was available. After the draft PR exists, replace the single placeholder below with its actual URL and send it to the appropriate classmate/mentor channel:
+No Slack/Discord tool or verified destination was available during the earlier snapshot. The draft PR now exists; the following request is ready for the student to send to the appropriate classmate/mentor channel:
 
-> Could someone review my draft PR for PathReview issue #57? [actual PR URL] It excludes exact vendor/build directory components at root and nested depths, with regression tests for configuration leakage and legitimate source paths. I'd appreciate feedback on correctness, regression coverage, and whether the change stays focused. Thanks!
+> Could someone review my draft PR for PathReview issue #57? https://github.com/codepath/pathreview-ai201-fa26-howard/pull/81 It excludes exact vendor/build directory components at root and nested depths, with regression tests for configuration leakage and legitimate source paths. I'd appreciate feedback on correctness, regression coverage, and whether the change stays focused. Thanks!
 
-This message is prepared, not sent; the PR URL placeholder is not presented as a real PR link.
+This message is prepared with the verified PR URL, not sent. No peer/mentor response is claimed.
 
-**Manual PR creation and remaining external actions:**
+**Remaining manual submission-readiness actions:**
 
-1. Open https://github.com/codepath/pathreview-ai201-fa26-howard/compare/main...blayne-montaque:fix/57-tech-detector-exclude-generated?expand=1 while signed in as `blayne-montaque`.
-2. Confirm base repository `codepath/pathreview-ai201-fa26-howard`, base `main`, head repository `blayne-montaque/pathreview-ai201-fa26-howard`, and compare branch `fix/57-tech-detector-exclude-generated`. Reuse any PR that has since appeared instead of creating a duplicate.
-3. Use title `fix(agent): exclude vendored and build-output directories from tech detection`. Copy the completed repository-template body from the local `../.pathreview-setup/unit9-pr-body.md`, including its actual validation results and unchecked remote-CI/integration boxes. Select **Create draft pull request**.
-4. Record the real upstream PR URL here and send the prepared review request. Inspect all five jobs on the latest PR head; if GitHub requires maintainer approval, request it through the instructor-designated channel. Investigate actual failures without altering unrelated seeded bugs.
-5. After all five jobs pass and available feedback is addressed, update the PR's CI checkbox and mark it Ready for review. Preserve the history; do not merge or force-push. Any subsequent journal push requires another latest-head CI check.
-6. Submit the existing working-branch URL through the Course Portal yourself when the PR is technically ready.
+1. Edit PR #81's description: check the all-five-jobs CI box and remove the stale claim that PR creation is blocked. Record the validated commit and CI-run link above; use the latest-head result once it completes rather than treating the earlier run as proof for a new commit. The separate local integration-test checkbox must not imply that an empty suite provides passing test coverage.
+2. Send the prepared peer/mentor feedback request if it has not been sent independently, and record only actual feedback. No reviewer request or response is inferred from the existence of the PR.
+3. After the latest-head checks pass and available feedback is addressed, mark the draft PR Ready for review when appropriate. This run is limited to the requested journal cleanup and attempted CI-checkbox update.
+4. Submit the existing working-branch URL through the Course Portal yourself when ready. No portal submission or merge is performed here.
 
-**Unit 9 audit status:** implementation, focused regression coverage, original-assertion proof, marker preservation, local required checks, self-review, two factual journal snapshots, and pushed branch are complete. External PR creation, a real PR URL in this check-in, five green remote jobs, actual feedback-request transmission, and Ready-for-review status remain blocked or pending the authenticated manual action above. A request template is supplied; no review feedback is fabricated. Unit 10 and video work were not started, and no Course Portal submission was performed.
+**Updated Unit 9 audit status:** the implementation, regression coverage, local required checks, self-review, both factual check-ins, upstream PR, real PR link, and five successful remote jobs for `bc49d50c0db4a98e57bbe712760316a7de8ca221` are verified. The former PR-creation blocker is resolved. Remaining actions are the permission-blocked PR-description edit, any unsent peer-review request, and the draft-to-ready/submission steps after checking the final head. Units 7 and 8, PLAN.md, production code, tests, and earlier commits are preserved; this follow-up changes only JOURNAL.md. Unit 10 has not begun.

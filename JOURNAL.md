@@ -510,3 +510,55 @@ This message is prepared with the verified PR URL, not sent. No peer/mentor resp
 4. Submit the existing working-branch URL through the Course Portal yourself when ready. No portal submission or merge is performed here.
 
 **Updated Unit 9 audit status:** the implementation, regression coverage, local required checks, self-review, both factual check-ins, upstream PR, real PR link, and five successful remote jobs for `bc49d50c0db4a98e57bbe712760316a7de8ca221` are verified. The former PR-creation blocker is resolved. Remaining actions are the permission-blocked PR-description edit, any unsent peer-review request, and latest-head CI/submission steps; Ready-for-review status is now verified. Units 7 and 8, PLAN.md, production code, tests, and earlier commits are preserved; this follow-up changes only JOURNAL.md. Unit 10 has not begun.
+
+
+## Unit 10 — Iteration & reflection
+
+Recorded: November 10, 2026 (America/New_York).
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No reviewer feedback has been received as of November 10, 2026. GitHub readback for [upstream PR #81](https://github.com/codepath/pathreview-ai201-fa26-howard/pull/81) returned no submitted reviews, inline review threads, or general discussion comments, and therefore no requested changes to address. The PR is open and Ready for review (`draft=false`, `merged=false`, `mergeable=true`), with no merge conflicts. Its verified head before this Unit 10 documentation update is `9abd028748670dc9c85db8de481f924f1383f15b` on `fix/57-tech-detector-exclude-generated`.
+
+**How you responded:**
+No reviewer response was required because no feedback had arrived. The student reported that the course Slack invitation had expired; no Slack request or peer response is claimed. The Unit 9 feedback message remains a prepared draft, not evidence of a sent request. No code or test changes were needed for reviewer feedback.
+
+**Verified CI and remaining metadata cleanup:**
+[CI run 42537950901](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901) is completed with conclusion `success` for the exact pre-update head `9abd028748670dc9c85db8de481f924f1383f15b`. Individual job readback confirms all five required jobs:
+
+| Job | Verified result | Evidence |
+| --- | --- | --- |
+| `lint` | completed / success | [Job 128906330535](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901/job/128906330535) |
+| `typecheck` | completed / success | [Job 128906330585](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901/job/128906330585) |
+| `test-unit` | completed / success | [Job 128906330335](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901/job/128906330335) |
+| `test-integration` | completed / success | [Job 128906330561](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901/job/128906330561) |
+| `frontend` | completed / success | [Job 128906330596](https://github.com/codepath/pathreview-ai201-fa26-howard/actions/runs/42537950901/job/128906330596) |
+
+These results resolve the earlier uncertainty about that documentation commit; they do not certify the new Unit 10 commit before its own run. The integration job still uses the repository's existing empty-suite handling, so its success does not establish integration test coverage. The current PR description still contains an unchecked CI box and the obsolete PR-creation blocker, despite the verified PR and successful run. The student can correct that description using the latest completed run; the earlier HTTP 403 metadata-edit limitation is preserved in Unit 9. Course Portal submission remains the student's action.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+
+The largest complication was the amount of setup needed around a small, deterministic path-filtering defect. Unit 7 required Python 3.11, GNU Make, WSL 2, Docker Desktop, and a Windows restart before the documented application setup could finish. Chroma then failed after its startup installation pulled in NumPy 2, and `make setup` encountered a Windows encoding error after migrations and seed data had already been committed. Local dependency constraints and process-specific UTF-8 settings resolved those problems without resetting the database or changing the repository's dependency files. Keeping that setup evidence separate from the unrelated health-route defects and frontend timeout was necessary to judge issue #57 on its own behavior.
+
+**What did you learn about working in a large codebase?**
+
+This contribution showed why a focused change in an existing codebase starts with understanding contracts that a standalone project would let me choose. In `agent/tools/tech_detector.py`, `_detect_tech()` already filters paths before both extension and configuration detection, so correcting `_should_skip_file()` addressed both sources of contamination. Inspection also showed that the primary language is chosen alphabetically, rather than by file counts, which meant the issue's two-Python/six-JavaScript example did not justify changing the ranking policy. The implementation therefore retained the eight excluded names, POSIX path interpretation, public result structure, and legitimate filenames such as `build.py`. The original two assertions were verified with `--runxfail` before their obsolete markers were removed, while the other 51 expected failures remained intact.
+
+**How did AI tools help — and where did they fall short?**
+
+Codex performed the delegated repository inspection, reproduction, planning, implementation, regression-test expansion, validation commands, and journal drafting, including this reflection. That assistance helped trace the missing leading slash, compare root and nested paths, and cover cases such as excluded `package.json` files and similarly named legitimate directories. It also required checking actual outputs: the saved Unit 9 logs show 76 detector tests passing, `make check` passing, and `make test-unit` reporting 426 passed and 51 xfailed. Automation could not complete authenticated PR creation or the later description edit because the GitHub connector returned HTTP 403, so the student posted the issue claim and manually created PR #81 after the corresponding access blockers. Local test output was not proof of a published PR or remote CI success; those claims required separate GitHub readback, just as an empty review list cannot be presented as human approval.
+
+**What would you do differently if you started over?**
+
+I would verify the Python version, Docker/WSL prerequisites, and restart requirement before scheduling the application setup. I would also settle the workspace location before creating the virtual environment, since the later move required repairing 58 console launchers and other local paths. I would check GitHub write permissions and the course Slack invitation earlier, leaving time to arrange a valid review channel instead of discovering access limitations at the PR stage. For evidence, I would keep a compact milestone record pairing each commit with its reproduction, test results, and exact CI run. The existing separate reproduction commit, `PLAN.md`, and implementation commits are worth retaining, while clearer status updates would make earlier blockers and their later resolution easier to follow.
+
+**What are you most proud of from this module?**
+
+The accomplishment I would highlight is turning issue #57's two expected failures into passing regression tests with a narrowly scoped production change. Exact directory-component matching now makes the original eight-path input return Python alone while preserving genuine mixed-language source and similar names such as `build_tools`. The 49 added parametrized cases brought the detector suite to 76 passing tests and covered root and nested exclusions, configuration leakage, filename boundaries, and input preservation. PR #81 places that change in the upstream review workflow, and GitHub has verified all five CI jobs on `9abd028748670dc9c85db8de481f924f1383f15b`, without implying that the PR has been approved or merged. The preserved Unit 7 setup, Unit 8 reproduction and plan, and Unit 9 implementation history make the result traceable from the initial defect through the tested fix.
